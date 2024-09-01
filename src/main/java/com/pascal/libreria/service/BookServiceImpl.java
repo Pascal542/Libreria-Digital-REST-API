@@ -36,4 +36,8 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
     }
+
+    public Optional<Book> getBookByIsbn(String isbn) {
+        return bookRepository.findByIsbn(isbn);
+    }
 }

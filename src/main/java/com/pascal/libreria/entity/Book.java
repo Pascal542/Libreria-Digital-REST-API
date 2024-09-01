@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 // Representa un libro de la libreria
+// es el producto principal del negocio
 
 @Getter
 @Setter

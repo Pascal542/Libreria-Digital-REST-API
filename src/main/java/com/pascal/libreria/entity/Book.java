@@ -1,6 +1,5 @@
 package com.pascal.libreria.entity;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +33,7 @@ public class Book {
     @NotBlank(message = "El autor no puede estar vacio")
     private String author;
 
+    // Codigo unico para identificar un libro (ISBN)
     @Column(nullable = false, unique = true, length = 17)
     @NotBlank(message = "El codigo isbn no puede ser vacio")
     @Size(min = 10, max = 17, message = "El codigo isbn debe tener entre 10 y 17 caracteres")
@@ -48,6 +48,7 @@ public class Book {
     private Status status;
 
     // Enum representando los estados de un libro
+    // dentro de la tienda digital
     public enum Status {
         AVAILABLE,
         BORROWED

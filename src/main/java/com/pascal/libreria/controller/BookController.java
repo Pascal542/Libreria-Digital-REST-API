@@ -45,4 +45,10 @@ public class BookController {
         Book updatedBook = bookService.updateBook(id, book);
         return new ResponseEntity<>(updatedBook, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBookById(@PathVariable("id") Long id) {
+        String response = bookService.deleteBookById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

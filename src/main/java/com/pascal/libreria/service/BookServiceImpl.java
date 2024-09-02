@@ -37,8 +37,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookById(Long id) {
+    public String deleteBookById(Long id) {
+        // VALIDATIONS: book must exist
+        getBookById(id);
+
         bookRepository.deleteById(id);
+        return "El libro con id " + id + " fue eliminado exitosamente";
     }
 
     public Optional<Book> getBookByIsbn(Book book) {
@@ -48,7 +52,6 @@ public class BookServiceImpl implements BookService {
                     + book.getIsbn()
                     + " ya existe");
         }
-        
         return existingBook;
     }
 

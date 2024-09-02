@@ -28,16 +28,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
-    }
-
-    @Override
-    public void deleteBook(Long id) {
+    public void deleteBookById(Long id) {
         bookRepository.deleteById(id);
     }
 
     public Optional<Book> getBookByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
+    }
+
+    @Override
+    public List<Book> getBooks(String author, String status) {
+        if (author != null && status != null) {
+            return bookRepository.findByAuthorAndStatus(author, Book.Status.valueOf(status));
+        } else if (author != null) {
+            return bookRepository.findByAuthor(author);
+        } else if (status != null) {
+            return bookRepository.findByStatus(Book.Status.valueOf(status));
+        } else {
+            return bookRepository.findAll();
+        }
     }
 }

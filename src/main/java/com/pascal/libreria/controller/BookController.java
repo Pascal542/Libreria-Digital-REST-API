@@ -12,7 +12,7 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v1/books")
 public class BookController {
     private final BookService bookService;
 
@@ -20,7 +20,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @PostMapping("/books")
+    @PostMapping
     public ResponseEntity<Book> createBook(@Valid @RequestBody Book newbook) {
         // VALIDATIONS: isbn must be unique
         Optional<Book> existingBook = bookService.getBookByIsbn(newbook.getIsbn());
@@ -30,5 +30,17 @@ public class BookController {
         // RETURN: book created
         Book savedBook = bookService.saveBook(newbook);
         return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Book>> getBooks(
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "status", required = false) String status) {
+        try {
+            List<Book> books = bookService.getBooks(author, status);
+            return ResponseEntity.ok(books);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

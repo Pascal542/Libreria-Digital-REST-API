@@ -20,8 +20,36 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book saveBook(Book book) {
-        return bookRepository.save(book);
+    public Book updateBook(Long id, Book book) {
+        Book existingBook = getBookById(id);
+
+        // VALIDATIONS: isbn code must be different from any in the database
+        if (!existingBook.getIsbn().equals(book.getIsbn())) {
+            getBookByIsbn(book);
+        }
+        
+        existingBook.setTitle(book.getTitle());
+        existingBook.setAuthor(book.getAuthor());
+        existingBook.setIsbn(book.getIsbn());
+        existingBook.setPublishedDate(book.getPublishedDate());
+        existingBook.setStatus(book.getStatus());
+        return bookRepository.save(existingBook);
+    }
+
+    @Override
+    public void deleteBookById(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    public Optional<Book> getBookByIsbn(Book book) {
+        Optional<Book> existingBook = bookRepository.findByIsbn(book.getIsbn());
+        if (existingBook.isPresent()) {
+            throw new BookAlreadyExistsException("Libro con codigo ISBN "
+                    + book.getIsbn()
+                    + " ya existe");
+        }
+        
+        return existingBook;
     }
 
     @Override
@@ -32,24 +60,15 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookById(Long id) {
-        bookRepository.deleteById(id);
-    }
-
-    public Optional<Book> getBookByIsbn(String isbn) {
-        return bookRepository.findByIsbn(isbn);
-    }
-
-    @Override
     public List<Book> getBooks(String author, String status) {
         List<Book> books;
 
         if (author != null && status != null) {
-            books = bookRepository.findByAuthorAndStatus(author, Book.Status.valueOf(status));
+            books = bookRepository.findByAuthorAndStatus(author, Book.Status.valueOf(status.toUpperCase()));
         } else if (author != null) {
             books = bookRepository.findByAuthor(author);
         } else if (status != null) {
-            books =bookRepository.findByStatus(Book.Status.valueOf(status));
+            books =bookRepository.findByStatus(Book.Status.valueOf(status.toUpperCase()));
         } else {
             books =bookRepository.findAll();
         }
@@ -63,12 +82,7 @@ public class BookServiceImpl implements BookService {
 
     public Book createBook(Book newBook) {
         // VALIDATIONS: isbn must be unique
-        Optional<Book> existingBook = bookRepository.findByIsbn(newBook.getIsbn());
-        if (existingBook.isPresent()) {
-            throw new BookAlreadyExistsException("Libro con codigo ISBN "
-                                                + newBook.getIsbn()
-                                                + " ya existe");
-        }
+        getBookByIsbn(newBook);
         // Save and return the new book
         return bookRepository.save(newBook);
     }

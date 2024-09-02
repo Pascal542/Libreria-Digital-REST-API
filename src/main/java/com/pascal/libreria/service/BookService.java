@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BookService{
-    Book saveBook(Book book);
+    Book updateBook(Long id, Book book);
     Book getBookById(Long id);
     void deleteBookById(Long id);
-    Optional<Book> getBookByIsbn(String isbn);
+    Optional<Book> getBookByIsbn(Book book);
     List<Book> getBooks(String author, String status);
     Book createBook(Book book);
 }

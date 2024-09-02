@@ -13,22 +13,27 @@ import java.util.Optional;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findByIsbn(String isbn);
-    List<Book> findByAuthor(String author);
     List<Book> findByStatus(Book.Status status);
     List<Book> findByAuthorAndStatus(String author, Book.Status status);
 
-    @Query(value = "SELECT * FROM books WHERE author = :author AND published_date BETWEEN :startDate AND :endDate",
+    @Query(value = "SELECT * FROM books WHERE published_date BETWEEN :startDate AND :endDate",
             nativeQuery = true)
-    List<Book> findBooksByAuthorAndPublicationDateRange(
-            @Param("author") String author,
+    List<Book> findBooksByDateRange(
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate);
+            @Param("endDate") LocalDate endDate
+    );
 
     @Query(value = "SELECT COUNT(*) FROM books WHERE status = 'AVAILABLE'",
             nativeQuery = true)
-    long countAvailableBooks();
+    Long countAvailableBooks();
 
     @Query(value = "SELECT COUNT(*) FROM books WHERE status = 'BORROWED'",
             nativeQuery = true)
-    long countBorrowedBooks();
+    Long countBorrowedBooks();
+
+    @Query(value = "SELECT * FROM books WHERE author = :author",
+            nativeQuery = true)
+    List<Book> findBooksByAuthor(@Param("author") String author);
+
+    List<Book> findByAuthor(String author);
 }

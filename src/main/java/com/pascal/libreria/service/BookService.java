@@ -14,4 +14,8 @@ public interface BookService{
     List<Book> getBooks(String author, String status);
     Book createBook(Book book);
     LocalDate getPublishedDate(Book book);
+    List<Book> findBooksByAuthor(String author);
+    List<Book> findBooksByDateRange(LocalDate startDate, LocalDate endDate);
+    Long countAvailableBooks();
+    Long countBorrowedBooks();
 }

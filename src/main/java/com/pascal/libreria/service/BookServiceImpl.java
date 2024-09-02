@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -105,5 +106,36 @@ public class BookServiceImpl implements BookService {
             );
         }
         return book.getPublishedDate();
+    }
+
+    @Override
+    public List<Book> findBooksByAuthor(String author) {
+        // VALIDATIONS: if empty
+        List<Book> books = bookRepository.findBooksByAuthor(author);
+        if (books.isEmpty()) {
+            throw new BookNotFoundException("No se encontraron libros");
+        }
+        return books;
+    }
+
+
+    @Override
+    public List<Book> findBooksByDateRange(LocalDate startDate, LocalDate endDate) {
+        // VALIDATIONS: if empty
+        List<Book> books = bookRepository.findBooksByDateRange(startDate, endDate);
+        if (books.isEmpty()) {
+            throw new BookNotFoundException("No se encontraron libros");
+        }
+        return books;
+    }
+
+    @Override
+    public Long countAvailableBooks() {
+        return bookRepository.countAvailableBooks();
+    }
+
+    @Override
+    public Long countBorrowedBooks() {
+        return bookRepository.countBorrowedBooks();
     }
 }

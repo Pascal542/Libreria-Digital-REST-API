@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,5 +52,37 @@ public class BookController {
     public ResponseEntity<String> deleteBookById(@PathVariable("id") Long id) {
         String response = bookService.deleteBookById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/author")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@RequestParam("author") String author) {
+        List<Book> books = bookService.findBooksByAuthor(author);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/date-range")
+    public ResponseEntity<List<Book>> getBooksByDateRange(
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // Convert user input to LocalDate
+        LocalDate startLocalDate = LocalDate.parse(startDate, formatter);
+        LocalDate endLocalDate = LocalDate.parse(endDate, formatter);
+
+        List<Book> books = bookService.findBooksByDateRange(startLocalDate, endLocalDate);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/count/available")
+    public ResponseEntity<Long> countAvailableBooks() {
+        long count = bookService.countAvailableBooks();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/count/borrowed")
+    public ResponseEntity<Long> countBorrowedBooks() {
+        long count = bookService.countBorrowedBooks();
+        return ResponseEntity.ok(count);
     }
 }

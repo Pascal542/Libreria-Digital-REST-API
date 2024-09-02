@@ -6,8 +6,9 @@ import java.util.Optional;
 
 public interface BookService{
     Book saveBook(Book book);
-    Optional<Book> getBookById(Long id);
+    Book getBookById(Long id);
     void deleteBookById(Long id);
     Optional<Book> getBookByIsbn(String isbn);
     List<Book> getBooks(String author, String status);
+    Book createBook(Book book);
 }

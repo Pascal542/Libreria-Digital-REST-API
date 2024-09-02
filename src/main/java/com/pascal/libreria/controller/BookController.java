@@ -21,26 +21,22 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@Valid @RequestBody Book newbook) {
-        // VALIDATIONS: isbn must be unique
-        Optional<Book> existingBook = bookService.getBookByIsbn(newbook.getIsbn());
-        if (existingBook.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        // RETURN: book created
-        Book savedBook = bookService.saveBook(newbook);
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
+        Book savedBook = bookService.createBook(book);
         return new ResponseEntity<>(savedBook, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Book>> getBooks(
-            @RequestParam(value = "author", required = false) String author,
-            @RequestParam(value = "status", required = false) String status) {
-        try {
-            List<Book> books = bookService.getBooks(author, status);
-            return ResponseEntity.ok(books);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
-        }
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String status) {
+        List<Book> books = bookService.getBooks(author, status);
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable("id") Long id) {
+        Book book = bookService.getBookById(id);
+        return new ResponseEntity<>(book, HttpStatus.OK);
     }
 }

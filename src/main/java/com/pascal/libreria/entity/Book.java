@@ -20,7 +20,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "books", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
+@Table(name = "books")
 public class Book {
     @Id
     @GeneratedValue( strategy = javax.persistence.GenerationType.IDENTITY )
@@ -35,7 +35,7 @@ public class Book {
     private String author;
 
     // Codigo unico para identificar un libro (ISBN)
-    @Column(nullable = false, unique = true, length = 17)
+    @Column(nullable = false, length = 17)
     @NotBlank(message = "El codigo isbn no puede ser vacio")
     @Size(min = 10, max = 17, message = "El codigo isbn debe tener entre 10 y 17 caracteres")
     private String isbn;

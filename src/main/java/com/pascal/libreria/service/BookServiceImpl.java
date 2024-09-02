@@ -1,6 +1,8 @@
 package com.pascal.libreria.service;
 
 import com.pascal.libreria.entity.Book;
+import com.pascal.libreria.exception.BookAlreadyExistsException;
+import com.pascal.libreria.exception.BookNotFoundException;
 import com.pascal.libreria.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
+    public Book getBookById(Long id) {
+        // VALIDATIONS: book must exist
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException("Libro con id " + id + " no existe"));
     }
 
     @Override
@@ -38,14 +42,34 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getBooks(String author, String status) {
+        List<Book> books;
+
         if (author != null && status != null) {
-            return bookRepository.findByAuthorAndStatus(author, Book.Status.valueOf(status));
+            books = bookRepository.findByAuthorAndStatus(author, Book.Status.valueOf(status));
         } else if (author != null) {
-            return bookRepository.findByAuthor(author);
+            books = bookRepository.findByAuthor(author);
         } else if (status != null) {
-            return bookRepository.findByStatus(Book.Status.valueOf(status));
+            books =bookRepository.findByStatus(Book.Status.valueOf(status));
         } else {
-            return bookRepository.findAll();
+            books =bookRepository.findAll();
         }
+
+        if (books.isEmpty()) {
+            throw new BookNotFoundException("No se encontraron libros");
+        }
+
+        return books;
+    }
+
+    public Book createBook(Book newBook) {
+        // VALIDATIONS: isbn must be unique
+        Optional<Book> existingBook = bookRepository.findByIsbn(newBook.getIsbn());
+        if (existingBook.isPresent()) {
+            throw new BookAlreadyExistsException("Libro con codigo ISBN "
+                                                + newBook.getIsbn()
+                                                + " ya existe");
+        }
+        // Save and return the new book
+        return bookRepository.save(newBook);
     }
 }

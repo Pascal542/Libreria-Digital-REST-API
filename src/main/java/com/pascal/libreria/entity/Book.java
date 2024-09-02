@@ -41,7 +41,6 @@ public class Book {
     private String isbn;
 
     @Column(name = "published_date", nullable = false)
-    @PastOrPresent(message = "La fecha debe ser anterior o igual a la actual")
     private LocalDate publishedDate;
 
     @Enumerated(EnumType.STRING)

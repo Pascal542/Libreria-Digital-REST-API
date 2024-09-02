@@ -15,6 +15,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(FuturePublicationDateException.class)
+    @ResponseBody
+    public ResponseEntity<String> handleFuturePublicationDateException(FuturePublicationDateException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(BookAlreadyExistsException.class)
     @ResponseBody
     public ResponseEntity<String> handleBookAlreadyExistsException(BookAlreadyExistsException ex) {

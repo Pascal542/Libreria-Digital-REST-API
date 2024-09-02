@@ -3,10 +3,12 @@ package com.pascal.libreria.service;
 import com.pascal.libreria.entity.Book;
 import com.pascal.libreria.exception.BookAlreadyExistsException;
 import com.pascal.libreria.exception.BookNotFoundException;
+import com.pascal.libreria.exception.FuturePublicationDateException;
 import com.pascal.libreria.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +24,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book updateBook(Long id, Book book) {
         Book existingBook = getBookById(id);
+
+        // VALIDATIONS: future publication date
+        getPublishedDate(book);
 
         // VALIDATIONS: isbn code must be different from any in the database
         if (!existingBook.getIsbn().equals(book.getIsbn())) {
@@ -83,10 +88,22 @@ public class BookServiceImpl implements BookService {
         return books;
     }
 
-    public Book createBook(Book newBook) {
+    public Book createBook(Book book) {
+        // VALIDATIONS: future publication date
+        getPublishedDate(book);
         // VALIDATIONS: isbn must be unique
-        getBookByIsbn(newBook);
+        getBookByIsbn(book);
         // Save and return the new book
-        return bookRepository.save(newBook);
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public LocalDate getPublishedDate(Book book) {
+        if (book.getPublishedDate().isAfter(LocalDate.now())) {
+            throw new FuturePublicationDateException(
+                    "La fecha de publicación no puede ser en el futuro: " + book.getPublishedDate()
+            );
+        }
+        return book.getPublishedDate();
     }
 }

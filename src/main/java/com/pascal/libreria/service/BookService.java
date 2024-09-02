@@ -1,6 +1,8 @@
 package com.pascal.libreria.service;
 
 import com.pascal.libreria.entity.Book;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,4 +13,5 @@ public interface BookService{
     Optional<Book> getBookByIsbn(Book book);
     List<Book> getBooks(String author, String status);
     Book createBook(Book book);
+    LocalDate getPublishedDate(Book book);
 }

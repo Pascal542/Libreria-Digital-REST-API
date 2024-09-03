@@ -30,21 +30,25 @@ Esta es una aplicación Spring Boot para gestionar una biblioteca digital. Propo
    ```bash
    git clone https://github.com/Pascal542/Libreria-Digital-REST-API.git
    cd Libreria-Digital-REST-API
-
+    
 2. Configurar la coneccion a la base de datos
 Se tiene que configurar manualmente la coneccion escribiendo las credenciales de tu usuario MySQL
 y creando tambien una base de datos llamada books
 
   ```bash
-Puedes crear la base de datos con el siguiente comando
+  Puedes crear la base de datos con el siguiente comando
+
   CREATE DATABASE books;
   USE books; 
 
 Configurar el application.properties del proyecto
+
   SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/books 
   SPRING_DATASOURCE_USERNAME=username
   SPRING_DATASOURCE_PASSWORD=password
+
 Crear la app con
 ./mvnw clean install
+
 Ejecutarla con 
 ./mvnw spring-boot:run

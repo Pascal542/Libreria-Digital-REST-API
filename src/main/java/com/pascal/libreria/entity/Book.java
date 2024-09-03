@@ -7,19 +7,20 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Size;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
 // Representa un libro de la libreria
+// es el producto principal del negocio
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "books", uniqueConstraints = @UniqueConstraint(columnNames = "isbn"))
+@Table(name = "books")
 public class Book {
     @Id
     @GeneratedValue( strategy = javax.persistence.GenerationType.IDENTITY )
@@ -40,7 +41,6 @@ public class Book {
     private String isbn;
 
     @Column(name = "published_date", nullable = false)
-    @PastOrPresent(message = "La fecha debe ser anterior o igual a la actual")
     private LocalDate publishedDate;
 
     @Enumerated(EnumType.STRING)
